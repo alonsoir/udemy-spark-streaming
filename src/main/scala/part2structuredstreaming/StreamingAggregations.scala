@@ -1,7 +1,9 @@
 package part2structuredstreaming
 
+import org.apache.kafka.streams.TopologyDescription.Source
 import org.apache.spark.sql.{Column, DataFrame, SparkSession}
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.streaming.OutputMode
 
 object StreamingAggregations {
 
@@ -41,8 +43,8 @@ object StreamingAggregations {
     val aggregationDF = numbers.select(aggFunction(col("number")).as("agg_so_far"))
 
     aggregationDF.writeStream
-      .format("console")
-      .outputMode("complete")
+      .format("console") //  // can be "orc", "json", "csv", "parquet", "kafka", delta.
+      .outputMode(OutputMode.Complete()) // "complete"
       .start()
       .awaitTermination()
   }
