@@ -68,6 +68,9 @@ object StreamingAggregations {
   }
 
   def main(args: Array[String]): Unit = {
-    groupNames()
+    //streamingCount()
+    //groupNames()
+    // el argumento puede ser cualquier funcion de functions._
+    numericalAggregations(sum)
   }
 }
