@@ -55,4 +55,17 @@ If you have changes to suggest to this repo, either
 - tell me in the course Q/A forum
 - submit a pull request!
 
+### Cassandra
+
+- Run Cassandra container opening a terminal with the command docker-compose up
+- Run cql.sh script in another terminal
+- execute the next command to create the keyspace:
+
+    create keyspace public with replication = {'class':'SimpleStrategy','replication_factor':1};
+    create table public.cars("Name" text primary key,"Horsepower" int);
+  
+- execute the next command if you need to delete the table
+
+    truncate public.cars;
+
 

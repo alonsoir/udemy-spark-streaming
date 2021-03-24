@@ -68,6 +68,8 @@ object IntegratingKafka {
   }
 
   def main(args: Array[String]): Unit = {
+    println("writeCarsToKafka...")
     writeCarsToKafka()
+    //readFromKafka()
   }
 }

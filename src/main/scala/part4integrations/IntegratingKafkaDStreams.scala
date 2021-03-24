@@ -1,10 +1,12 @@
 package part4integrations
 
-import java.util
+import org.apache.kafka.clients.consumer.ConsumerRecord
 
+import java.util
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 import org.apache.kafka.common.serialization.{StringDeserializer, StringSerializer}
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.streaming.dstream.{DStream, InputDStream, ReceiverInputDStream}
 import org.apache.spark.streaming.kafka010.{ConsumerStrategies, KafkaUtils, LocationStrategies}
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
@@ -30,8 +32,8 @@ object IntegratingKafkaDStreams {
   val kafkaTopic = "rockthejvm"
 
   def readFromKafka() = {
-    val topics = Array(kafkaTopic)
-    val kafkaDStream = KafkaUtils.createDirectStream(
+    val topics:Array[String] = Array(kafkaTopic)
+    val kafkaDStream:InputDStream[ConsumerRecord[String, String]] = KafkaUtils.createDirectStream(
       ssc,
       LocationStrategies.PreferConsistent,
       /*
@@ -48,7 +50,7 @@ object IntegratingKafkaDStreams {
        */
     )
 
-    val processedStream = kafkaDStream.map(record => (record.key(), record.value()))
+    val processedStream:DStream[(String, String)] = kafkaDStream.map(record => (record.key(), record.value()))
     processedStream.print()
 
     ssc.start()
@@ -56,10 +58,10 @@ object IntegratingKafkaDStreams {
   }
 
   def writeToKafka() = {
-    val inputData = ssc.socketTextStream("localhost", 12345)
+    val inputData:ReceiverInputDStream[String] = ssc.socketTextStream("localhost", 12345)
 
     // transform data
-    val processedData = inputData.map(_.toUpperCase())
+    val processedData:DStream[String]  = inputData.map(_.toUpperCase())
 
     processedData.foreachRDD { rdd =>
       rdd.foreachPartition { partition =>

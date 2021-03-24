@@ -1,6 +1,6 @@
 package part4integrations
 
-import org.apache.spark.sql.{Dataset, SparkSession}
+import org.apache.spark.sql.{Dataset, SaveMode, SparkSession}
 import common._
 
 object IntegratingJDBC {
@@ -35,6 +35,7 @@ object IntegratingJDBC {
           .option("url", url)
           .option("user", user)
           .option("password", password)
+          .mode(SaveMode.Overwrite) // essential if you run the script at least twice.
           .option("dbtable", "public.cars")
           .save()
       }
